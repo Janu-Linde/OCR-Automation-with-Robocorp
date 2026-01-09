@@ -1,7 +1,7 @@
 # This script provides funcitonality to validate South African VAT numbers and company registration numbers.
 # Data format: ['solutions', '2021/087654/07', '4123456789', 'architect']
 
-# Number Examples 
+# Number Examples
 # Company Registration Number: ["2021/123456/07"]
 # VAT Number: ["4987654321"]
 
@@ -14,7 +14,6 @@ def check_registration(items):
             and int(item[:4]) > 1899
         ):
             return item
-        
     return "No-match-found"
 
 

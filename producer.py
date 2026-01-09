@@ -1,5 +1,3 @@
-import json
-
 from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
 
@@ -8,40 +6,23 @@ from robocorp.tasks import task
 from RPA.FileSystem import FileSystem
 import validation
 
-# pytesseract.pytesseract.tesseract_cmd = r"C:\My Program Files\Tesseract\tesseract.exe"
-
 @task
 def minimal_task():
     fs = FileSystem()
-    directory = r"invoices"
-    image_directory = fs.list_files_in_directory(directory)
+    image_directory = fs.list_files_in_directory(r"invoices")
 
-    combined_data = []
-    
-
-    # if not fs.does_file_exist("output/data.json"):
-    #     with open("output/data.json", "w") as f:
-    #         pass
+    global combined_invoice_data
+    combined_invoice_data = []
 
     for path in image_directory:
         file_name = fs.get_file_name(path)
 
         image = prep_image(path)
         text = get_text(image)
-        comp_reg = validation.validate_company_number(text)
-        vat_num = validation.validate_vat_number(text)
-        
-        data = dict(
-            file_name=f"{file_name}",
-            company_reg_number=f"{comp_reg}",
-            vat_number=f"{vat_num}"   
-        )
+        return_directory_results(text)
 
-        combined_data.append(data)
+    print(combined_invoice_data)
         
-    with open("output/data.json", "w") as f:
-        json.dump(combined_data, f, indent=4)
-
 
 def prep_image(image_path):
     image = Image.open(image_path)
@@ -58,6 +39,10 @@ def get_text(image):
     text = text.split()
     text = [digits_only(word) for word in text]
     return text
+
+
+def return_directory_results(text):
+    combined_invoice_data.append(text)
 
 
 def digits_only(number):

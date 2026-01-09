@@ -1,30 +1,28 @@
-from datetime import date
+# This script provides funcitonality to validate South African VAT numbers and company registration numbers.
+# Data format: ['solutions', '2021/087654/07', '4123456789', 'architect']
 
-# This script provides function that validate South African VAT and company registration numbers
+# Number Examples 
+# Company Registration Number: ["2021/123456/07"]
+# VAT Number: ["4987654321"]
 
-def validate_company_number(numbers):
-    def check_year(num):
-        this_year = date.today().year
-        if len(num) == 12:
-            year = int(num[:4])
-            return 1900 <= year <= this_year
-        return False
 
-    def check_entity(num):
-        entity_codes = ["06", "07", "08", "21", "23", "30"]
-        return num[-2:] in entity_codes
+def check_registration(items):
+    for item in items:
+        if (
+            len(item) == 14
+            and int(item[:4]) < 2027
+            and int(item[:4]) > 1899
+        ):
+            return item
+        
+    return "No-match-found"
 
-    for element in numbers:
-        if check_year(element) and check_entity(element):
-            return add_slahses(element)
-    return "No match found"
-    
-def validate_vat_number(list):
-    for element in list:
-        if len(element) == 10 and element.startswith("4"):
-            return element
-    return "No match found"
 
-def add_slahses(number):
-    number = number[:4] + "/" + number[4:10] + "/" + number[-2:]
-    return number
+def check_vat(items):
+    for item in items:
+        if (
+            len(item) == 10
+            and int(item[0]) == 4
+        ):
+            return item
+    return "No-match-found"

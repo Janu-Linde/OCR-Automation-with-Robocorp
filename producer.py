@@ -16,10 +16,9 @@ def minimal_task():
 
     for path in image_directory:
         file_name = fs.get_file_name(path)
-
         image = prep_image(path)
         text = get_text(image)
-        return_directory_results(text)
+        return_invoice_results(text, file_name)
 
     print(combined_invoice_data)
         
@@ -37,14 +36,16 @@ def prep_image(image_path):
 def get_text(image):
     text = pytesseract.image_to_string(image)
     text = text.split()
-    text = [digits_only(word) for word in text]
     return text
 
 
-def return_directory_results(text):
-    combined_invoice_data.append(text)
+def return_invoice_results(text, name):
+    
+    vat_num = validation.check_vat(text)
+    registration_num = validation.check_registration(text)
 
-
-def digits_only(number):
-    cleaned = "".join(character for character in number if character.isdigit())
-    return cleaned
+    invoice_results = dict(file_name=f"{name}",
+                        vat_Number=f"{vat_num}",
+                        registration_Number=f"{registration_num}")
+    
+    combined_invoice_data.append(invoice_results)

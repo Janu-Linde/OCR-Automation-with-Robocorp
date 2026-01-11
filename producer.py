@@ -48,8 +48,8 @@ def get_payloads(data_set, directory):
         registration_num = validation.check_registration(set)
 
         payload = dict(file_name=f"{file_name}",
-                        vat_Number=f"{vat_num}",
-                        registration_Number=f"{registration_num}")
+                        vat_number=f"{vat_num}",
+                        registration_number=f"{registration_num}")
         payloads.append(payload)
 
     return payloads

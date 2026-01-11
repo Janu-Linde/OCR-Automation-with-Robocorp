@@ -42,5 +42,5 @@ def write_to_excel(file_name, vat_num, reg_num):
         excel.create_workbook("output/report.xlsx")
         headers = ["File Name", "VAT Number", "Registration Number"]
         excel.append_rows_to_worksheet([headers], header=False)
-        excel.append_rows_to_worksheet([["second", "second", "second"]], header=False)
+        excel.append_rows_to_worksheet([[file_name, vat_num, reg_num]], header=False)
         excel.save_workbook()

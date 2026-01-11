@@ -9,7 +9,7 @@ import validation
 @task
 def minimal_task():
     fs = FileSystem()
-    image_directory = fs.list_files_in_directory(r"invoices")
+    image_directory = fs.list_files_in_directory(r"C:\Users\janul\Downloads\invoices")
 
     text = get_text(image_directory)
     payloads = get_payloads(text, image_directory)

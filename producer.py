@@ -1,9 +1,9 @@
 from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
-
-# from robocorp import workitems
 from robocorp.tasks import task
+from robocorp import workitems
 from RPA.FileSystem import FileSystem
+
 import validation
 
 @task
@@ -11,41 +11,51 @@ def minimal_task():
     fs = FileSystem()
     image_directory = fs.list_files_in_directory(r"invoices")
 
-    global combined_invoice_data
-    combined_invoice_data = []
-
-    for path in image_directory:
-        file_name = fs.get_file_name(path)
-        image = prep_image(path)
-        text = get_text(image)
-        return_invoice_results(text, file_name)
-
-    print(combined_invoice_data)
-        
-
-def prep_image(image_path):
-    image = Image.open(image_path)
-    image = image.convert("L") 
-    image = image.filter(ImageFilter.SHARPEN)
-    image = ImageEnhance.Contrast(image).enhance(2)
-    image = image.resize((image.width * 2, image.height * 2))
-    
-    return image
+    text = get_text(image_directory)
+    payloads = get_payloads(text, image_directory)
+    save_workitems(payloads)
 
 
-def get_text(image):
-    text = pytesseract.image_to_string(image)
-    text = text.split()
-    return text
+def get_text(image_directory):
+    image_data = []
+
+    for i in image_directory:
+        # Prep the image for OCR extraction
+        image = Image.open(i)
+        image = image.convert("L") 
+        image = image.filter(ImageFilter.SHARPEN)
+        image = ImageEnhance.Contrast(image).enhance(2)
+        image = image.resize((image.width * 2, image.height * 2))
+        # Get text from images
+        text = pytesseract.image_to_string(image)
+        text = text.split()
+        image_data.append(text)
+
+    return image_data
 
 
-def return_invoice_results(text, name):
-    
-    vat_num = validation.check_vat(text)
-    registration_num = validation.check_registration(text)
+def get_payloads(data_set, directory):
+    # Prep data for workitems
+    # Get image information
+    fs = FileSystem()
+    payloads = []
 
-    invoice_results = dict(file_name=f"{name}",
+    for set, image in zip(data_set, 
+                          directory):
+
+        file_name = fs.get_file_name(image)
+        vat_num = validation.check_vat(set)
+        registration_num = validation.check_registration(set)
+
+        payload = dict(file_name=f"{file_name}",
                         vat_Number=f"{vat_num}",
                         registration_Number=f"{registration_num}")
-    
-    combined_invoice_data.append(invoice_results)
+        payloads.append(payload)
+
+    return payloads
+
+
+def save_workitems(payloads):
+    for payload in payloads:
+        variables = dict(traffic_data=payload)
+        workitems.outputs.create(variables)

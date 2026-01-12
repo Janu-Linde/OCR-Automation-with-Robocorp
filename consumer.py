@@ -16,7 +16,6 @@ def process_traffic_data():
         reg = traffic_data["registration_number"]
 
         if invalid(vat) or invalid(reg):
-            write_to_excel(name, vat, reg)
             item.fail()
         else:
             write_to_excel(name, vat, reg)

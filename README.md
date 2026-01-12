@@ -11,7 +11,7 @@ In a South African context, the goal would be to ensure that the company works w
    - Use the Windows installer to install Tesseract: https://github.com/UB-Mannheim/tesseract/wiki
    - Note that you will need both the Tesseract engine and Tesseract package.
    ```
-   pip install pytesseract # install package
+   pip install pytesseract
    ```
 4. Install other pip packages
    - **Package names:** *pillow, robocorp-tasks, rpaframework.*
@@ -29,7 +29,7 @@ To run the project, there are two parts you need to run.
      width="40%" />
 
 # How the automation works
-![image alt]([https://github.com/InnoJanu/OCR-Automation-with-Robocorp/blob/main/README%20Images/run_in_vs_code.jpg?raw=true](https://github.com/Janu-Linde/OCR-Automation-with-Robocorp/blob/main/README%20Images/how_it_works%20v2.jpg?raw=true))
+![image alt](https://github.com/Janu-Linde/OCR-Automation-with-Robocorp/blob/main/README%20Images/how_it_works%20v2.jpg?raw=true)
 
 Potential additions to project:
 + *Add a bot that retrieves invoices and puts them into a directory.*
